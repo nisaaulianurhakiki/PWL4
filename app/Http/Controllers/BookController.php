@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Bookshelf;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\BooksExport;
+use App\Imports\BooksImport;
 
 use Illuminate\Http\Request;
 
@@ -20,7 +24,6 @@ class BookController extends Controller
         $data['bookshelves'] = Bookshelf::pluck('name', 'id');
         return view('books.create', $data);
     }
-
 
     public function store(Request $request)
     {
@@ -54,6 +57,7 @@ class BookController extends Controller
         return redirect()->route('book.create')->with($notification);
         }
     }
+
     public function edit(string $id)
     {
         $data['book'] = Book::find($id);
@@ -61,6 +65,7 @@ class BookController extends Controller
 
         return view('books.edit', $data);
     }
+
     public function update(Request $request, string $id)
     {
         $book = Book::find($id);
@@ -76,9 +81,9 @@ class BookController extends Controller
         'cover' => 'nullable|image',
         ]);
         if ($request->hasFile('cover')) {
-            if($book->cover != null){
-            // Storage::delete('public/cover_buku/'.$request->old_cover);
-            }
+            // if($book->cover != null){
+
+            // }
 
             $path = $request->file('cover')->storeAs(
             'public/cover_buku',
@@ -97,7 +102,7 @@ class BookController extends Controller
     public function destroy(string $id)
     {
         $book = Book::findOrFail($id);
-       //Storage::delete('public/cover_buku/'.$book->cover);
+
 
         $book->delete();
         $notification = array(
@@ -106,5 +111,9 @@ class BookController extends Controller
         );
         return redirect()->route('book')->with($notification);
     }
-
+    public function print() {
+        $data = Book::all();
+        $pdf = Pdf::loadview('books.print', ['books' => $data]);
+        return $pdf->download('data_buku.pdf');
+    }
 }
