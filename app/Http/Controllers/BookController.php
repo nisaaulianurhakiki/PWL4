@@ -116,4 +116,29 @@ class BookController extends Controller
         $pdf = Pdf::loadview('books.print', ['books' => $data]);
         return $pdf->download('data_buku.pdf');
     }
+    public function export()
+    {
+        return Excel::download(new BooksExport, 'books.xlsx');
+    }
+    public function import(Request $req)
+    {
+        $req->validate([
+            'file'
+        ]);
+    }
+    public function Imports(Request $req)
+    {
+    $req->validate([
+        'file' => 'required|max:10000|mimes:xlsx,xls',
+    ]);
+
+    Excel::import(new BooksImport, $req->file('file'));
+
+    $notification = array(
+        'message' => 'Import data berhasil dilakukan',
+        'alert-type' => 'success'
+    );
+    return redirect()->route('book')->with($notification);
+    }
+
 }

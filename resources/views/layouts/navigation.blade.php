@@ -28,11 +28,6 @@
                         {{ __('Book') }}
                     </x-nav-link>
                 </div>
-                {{-- <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('bookshelf.index')" :active="request()->routeIs('bookshelf.index')">
-                        {{ __('Bookshelf') }}
-                    </x-nav-link>
-                </div> --}}
             </div>
 
             <!-- Settings Dropdown -->
